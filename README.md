@@ -32,12 +32,12 @@
 
 Este proyecto utiliza las mejores prácticas y herramientas modernas para el desarrollo Android:
 
--   **Lenguaje:** [Kotlin](https://kotlinlang.org/) (o Java).
+-   **Lenguaje:** Kotlin (o Java).
 -   **Arquitectura:** MVVM (Model-View-ViewModel) para una separación de conceptos clara.
--   **Networking:** [Retrofit](https://square.github.io/retrofit/) + OkHttp para el consumo de la API.
+-   **Networking:** Retrofit + OkHttp para el consumo de la API.
 -   **Gestión de Datos:** Coroutines para tareas asíncronas y flujo de datos fluido.
 -   **Interfaz:** XML / Jetpack Compose (según tu implementación).
--   **Imágenes:** [Glide](https://github.com/bumptech/glide) o [Coil] para cargar los logos de las criptomonedas.
+-   **Imágenes:** Glide para cargar los logos de las criptomonedas.
 
 ---
 

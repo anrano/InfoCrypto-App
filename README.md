@@ -8,7 +8,7 @@
 
 ---
 
-## 📝 Description / Descripción
+## Description / Descripción
 
 **English:**
 > **CryptoTracker:** A native Android app powered by a real-time API to monitor hundreds of cryptocurrencies. Features live pricing and 24-hour price change analysis (gains/losses).
@@ -18,7 +18,7 @@
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
 -   **Listado Completo:** Acceso a una vasta base de datos de criptomonedas.
 -   **Precios en Vivo:** Actualizaciones constantes mediante integración con API REST.
@@ -28,7 +28,7 @@
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 Este proyecto utiliza las mejores prácticas y herramientas modernas para el desarrollo Android:
 
@@ -41,47 +41,21 @@ Este proyecto utiliza las mejores prácticas y herramientas modernas para el des
 
 ---
 
-## 📸 Capturas de Pantalla
-
-| Lista de Criptos | Detalle de Precios | Variación 24h |
-| :---: | :---: | :---: |
-| ![Screen1](https://via.placeholder.com/200x400?text=Lista+App) | ![Screen2](https://via.placeholder.com/200x400?text=Detalle) | ![Screen3](https://via.placeholder.com/200x400?text=Gráfica) |
-
-*(Sugerencia: Reemplaza estas imágenes con capturas reales de tu aplicación)*
-
----
-
-## 🚀 Instalación
-
-Sigue estos pasos para ejecutar el proyecto localmente:
-
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone [https://github.com/tu-usuario/InfoCrypto-App.git](https://github.com/tu-usuario/InfoCrypto-App.git)
-    ```
-2.  **Abrir en Android Studio:**
-    Importa el proyecto y deja que Gradle descargue todas las dependencias necesarias.
-3.  **Configurar API Key (Si es necesario):**
-    Si la API que usas requiere una llave, agrégala en tu archivo `gradle.properties` o en la clase correspondiente.
-4.  **Ejecutar:**
-    Selecciona tu dispositivo/emulador y presiona `Run`.
-
----
-
-## 📊 API Utilizada
+## API Utilizada
 
 Este proyecto consume datos de: 
 -   **[Nombre de la API aquí, ej: CoinGecko API]** - Proporciona datos de mercado, precios y variaciones históricas.
 
 ---
 
-## 👤 Autor
+## Autor
 
 Desarrollado por Antonio Rañó Ruiz - ¿Tienes alguna sugerencia o quieres colaborar? ¡Contáctame!
 
--   [LinkedIn](https://www.linkedin.com/in/tu-perfil)
--   [Portfolio](https://tu-web.com)
+- **Email:** [rano.ruiz.antonio@gmail.com](mailto:rano.ruiz.antonio@gmail.com)
+- **LinkedIn:** [linkedin.com/in/antonio-raño-ruiz](https://linkedin.com/in/antonio-raño-ruiz-5b217012a)
+- **Portfolio:** [antoniora.github.io](https://antoniora.github.io)
 
 ---
 
-⭐ ** Si este proyecto te resultó útil, no olvides darle una estrella en GitHub! :) **
+⭐ ** Si este proyecto te resultó útil, no olvides darle una estrella en GitHub! :) ** ⭐

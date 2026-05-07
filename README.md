@@ -44,7 +44,7 @@ Este proyecto utiliza las mejores prácticas y herramientas modernas para el des
 ## API Utilizada
 
 Este proyecto consume datos de: 
--   **[Nombre de la API aquí, ej: CoinGecko API]** - Proporciona datos de mercado, precios y variaciones históricas.
+-   **API de CoinMarketCap** - Proporciona datos de mercado, precios y variaciones históricas.
 
 ---
 

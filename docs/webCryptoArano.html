@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoCrypto App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #020b14;
+    --bg2: #041020;
+    --surface: rgba(0,240,255,0.04);
+    --border: rgba(0,240,255,0.15);
+    --accent: #00f0ff;
+    --accent2: #00ff88;
+    --red: #ff3c5a;
+    --text: #e0f7ff;
+    --text-muted: rgba(224,247,255,0.5);
+    --card-bg: rgba(0,10,30,0.8);
+    --glow: 0 0 20px rgba(0,240,255,0.3);
+    --glow-sm: 0 0 8px rgba(0,240,255,0.4);
+  }
+  :root[data-theme="light"] {
+    --bg: #f0f6ff;
+    --bg2: #e2eeff;
+    --surface: rgba(0,80,180,0.05);
+    --border: rgba(0,80,180,0.2);
+    --accent: #005bcc;
+    --accent2: #00a86b;
+    --red: #d9002e;
+    --text: #0a1428;
+    --text-muted: rgba(10,20,40,0.5);
+    --card-bg: rgba(255,255,255,0.85);
+    --glow: 0 4px 24px rgba(0,80,180,0.15);
+    --glow-sm: 0 2px 8px rgba(0,80,180,0.2);
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.4s, color 0.4s;
+  }
+ 
+  /* ─── GRID BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.4s;
+  }
+  [data-theme="light"] body::before { opacity: 0.4; }
+ 
+  /* ─── TICKER ─── */
+  .ticker-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-track {
+    display: flex;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+  }
+  .ticker-item .sym { color: var(--accent); font-weight: 700; }
+  .ticker-item .up { color: var(--accent2); }
+  .ticker-item .dn { color: var(--red); }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+ 
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 36px; left: 0; right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: rgba(2,11,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    transition: background 0.4s;
+  }
+  [data-theme="light"] nav { background: rgba(240,246,255,0.88); }
+ 
+  .nav-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-shadow: var(--glow-sm);
+  }
+  .nav-logo span { color: var(--accent2); }
+ 
+  .nav-controls { display: flex; gap: 10px; align-items: center; }
+ 
+  .ctrl-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--accent);
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .ctrl-btn:hover {
+    background: rgba(0,240,255,0.1);
+    border-color: var(--accent);
+    box-shadow: var(--glow-sm);
+  }
+  [data-theme="light"] .ctrl-btn { color: var(--accent); }
+ 
+  /* ─── MAIN LAYOUT ─── */
+  main {
+    position: relative;
+    z-index: 1;
+    padding-top: 96px;
+  }
+ 
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    position: relative;
+  }
+ 
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+ 
+  .hero-title {
+    font-size: clamp(42px, 8vw, 90px);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .hero-title .line2 {
+    color: var(--accent);
+    text-shadow: var(--glow);
+    display: block;
+  }
+ 
+  .hero-sub {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+ 
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+ 
+  .btn-primary {
+    padding: 14px 32px;
+    background: var(--accent);
+    color: #020b14;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+    box-shadow: 0 0 24px rgba(0,240,255,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0,240,255,0.6); }
+  [data-theme="light"] .btn-primary { box-shadow: 0 4px 20px rgba(0,91,204,0.35); }
+ 
+  .btn-secondary {
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+ 
+  /* Floating mock phone */
+  .phone-wrapper {
+    position: relative;
+    margin-top: 60px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+  }
+  .phone {
+    width: 220px;
+    border-radius: 30px;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    padding: 20px 16px;
+    box-shadow: var(--glow), inset 0 0 40px rgba(0,240,255,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 50%; transform: translateX(-50%);
+    width: 70px; height: 16px;
+    background: var(--bg2);
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+  .phone-bar {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    padding-top: 8px;
+  }
+  .phone-search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .phone-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(0,240,255,0.06);
+    animation: rowFlash 3s infinite;
+  }
+  .phone-row:nth-child(2) { animation-delay: 0.5s; }
+  .phone-row:nth-child(3) { animation-delay: 1s; }
+  .phone-row:nth-child(4) { animation-delay: 1.5s; }
+  .phone-row:nth-child(5) { animation-delay: 2s; }
+ 
+  @keyframes rowFlash {
+    0%,95%,100% { background: transparent; }
+    97% { background: rgba(0,240,255,0.04); }
+  }
+ 
+  .row-coin { font-size: 13px; font-weight: 600; }
+  .row-sym { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); }
+  .row-price { font-family: 'Share Tech Mono', monospace; font-size: 11px; }
+  .row-chg { font-family: 'Share Tech Mono', monospace; font-size: 10px; }
+ 
+  /* ─── SECTIONS ─── */
+  section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+ 
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+ 
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    margin-bottom: 48px;
+    line-height: 1.1;
+  }
+ 
+  /* ─── FEATURES GRID ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+ 
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--glow);
+    border-color: var(--accent);
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .feature-card:hover::after { opacity: 1; }
+ 
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .feature-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .feature-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+ 
+  /* ─── HOW IT WORKS ─── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+  }
+ 
+  .step {
+    padding: 0 16px 0;
+    text-align: center;
+    position: relative;
+  }
+  .step-num {
+    width: 56px; height: 56px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    color: var(--accent);
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--glow-sm);
+  }
+  .step-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; font-weight: 300; color: var(--text-muted); line-height: 1.5; }
+ 
+  /* ─── TECH STACK ─── */
+  .tech-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .tech-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+    background: var(--surface);
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+ 
+  /* ─── DIVIDER ─── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 24px;
+    opacity: 0.5;
+  }
+ 
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+ 
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  /* ─── PRICE CHART MINI ─── */
+  .chart-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-top: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .chart-title-group .big-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 32px;
+    color: var(--text);
+  }
+  .chart-title-group .big-change {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--accent2);
+  }
+  .chart-svg { width: 100%; height: 80px; }
+ 
+  /* ─── MARKET TABLE ─── */
+  .market-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .market-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .market-table td {
+    padding: 12px 12px;
+    border-bottom: 1px solid rgba(0,240,255,0.05);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+  }
+  .market-table tr:last-child td { border-bottom: none; }
+  .market-table .sym-cell { color: var(--accent); }
+  .market-table .up { color: var(--accent2); }
+  .market-table .dn { color: var(--red); }
+  .market-table tr:hover td { background: var(--surface); }
+ 
+  /* live dot */
+  .live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-right: 6px;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+ 
+  @media(max-width: 600px) {
+    nav { padding: 0 16px; }
+    .hero-cta { flex-direction: column; align-items: center; }
+    .steps::before { display: none; }
+  }
+</style>
+</head>
+<body>
+ 
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">INFO<span>CRYPTO</span></div>
+  <div class="nav-controls">
+    <button class="ctrl-btn" id="langBtn" onclick="toggleLang()">EN</button>
+    <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()">☀</button>
+  </div>
+</nav>
+ 
+<main>
+ 
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow" data-es="APLICACIÓN ANDROID · KOTLIN · API TIEMPO REAL" data-en="ANDROID APP · KOTLIN · REAL-TIME API">APLICACIÓN ANDROID · KOTLIN · API TIEMPO REAL</div>
+    <h1 class="hero-title">
+      <span data-es="EXPLORA EL" data-en="EXPLORE THE">EXPLORA EL</span>
+      <span class="line2" data-es="MERCADO CRYPTO" data-en="CRYPTO MARKET">MERCADO CRYPTO</span>
+    </h1>
+    <p class="hero-sub" data-es="App nativa para Android que consulta precios, capitalizaciones y variaciones 24h de criptomonedas en tiempo real usando la API de CoinMarketCap." data-en="Native Android app that queries real-time cryptocurrency prices, market caps, and 24h changes using the CoinMarketCap API.">
+      App nativa para Android que consulta precios, capitalizaciones y variaciones 24h de criptomonedas en tiempo real usando la API de CoinMarketCap.
+    </p>
+    <div class="hero-cta">
+      <a href="https://github.com/anrano/InfoCrypto-App" target="_blank" class="btn-primary" data-es="VER EN GITHUB" data-en="VIEW ON GITHUB">VER EN GITHUB</a>
+      <a href="#features" class="btn-secondary" data-es="DESCUBRIR MÁS" data-en="DISCOVER MORE">DESCUBRIR MÁS</a>
+    </div>
+ 
+    <div class="phone-wrapper">
+      <div class="phone">
+        <div class="phone-bar">INFOCRYPTO</div>
+        <div class="phone-search">🔍 <span data-es="Buscar cripto..." data-en="Search crypto...">Buscar cripto...</span></div>
+        <div id="phoneRows"></div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-label" data-es="FUNCIONALIDADES" data-en="FEATURES">FUNCIONALIDADES</div>
+    <h2 class="section-title" data-es="¿Qué hace la app?" data-en="What does the app do?">¿Qué hace la app?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">📡</span>
+        <div class="feature-title" data-es="Datos en Tiempo Real" data-en="Real-Time Data">Datos en Tiempo Real</div>
+        <div class="feature-desc" data-es="Conecta con la API de CoinMarketCap para traer el listado actualizado de las principales criptomonedas con precio y capitalización." data-en="Connects to the CoinMarketCap API to fetch an up-to-date list of top cryptocurrencies with price and market cap.">Conecta con la API de CoinMarketCap para traer el listado actualizado de las principales criptomonedas con precio y capitalización.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔍</span>
+        <div class="feature-title" data-es="Búsqueda Instantánea" data-en="Instant Search">Búsqueda Instantánea</div>
+        <div class="feature-desc" data-es="Filtra cualquier criptomoneda por nombre o símbolo (BTC, ETH…) en tiempo real, letra a letra, sin volver a consultar la red." data-en="Filter any cryptocurrency by name or symbol (BTC, ETH…) in real-time, letter by letter, without re-querying the network.">Filtra cualquier criptomoneda por nombre o símbolo (BTC, ETH…) en tiempo real, letra a letra, sin volver a consultar la red.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📈</span>
+        <div class="feature-title" data-es="Detalle Completo" data-en="Full Detail View">Detalle Completo</div>
+        <div class="feature-desc" data-es="Pulsa cualquier cripto para ver su precio exacto, capitalización de mercado y variación porcentual en las últimas 24h con indicador de color." data-en="Tap any crypto to see its exact price, market cap, and 24h percentage change with a color indicator (green/red).">Pulsa cualquier cripto para ver su precio exacto, capitalización de mercado y variación porcentual en las últimas 24h con indicador de color.</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title" data-es="Asíncrono & Fluido" data-en="Async & Smooth">Asíncrono & Fluido</div>
+        <div class="feature-desc" data-es="Las llamadas a red usan Coroutines de Kotlin para ejecutarse en segundo plano, manteniendo la interfaz siempre responsiva." data-en="Network calls use Kotlin Coroutines to run in the background, keeping the UI always responsive.">Las llamadas a red usan Coroutines de Kotlin para ejecutarse en segundo plano, manteniendo la interfaz siempre responsiva.</div>
+      </div>
+    </div>
+ 
+    <!-- Mini market table -->
+    <div class="chart-section" style="margin-top:48px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+        <span class="live-dot"></span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;" data-es="MUESTRA DEL LISTADO" data-en="LIST PREVIEW">MUESTRA DEL LISTADO</span>
+      </div>
+      <table class="market-table">
+        <thead>
+          <tr>
+            <th data-es="MONEDA" data-en="COIN">MONEDA</th>
+            <th>SÍMBOLO</th>
+            <th data-es="PRECIO (USD)" data-en="PRICE (USD)">PRECIO (USD)</th>
+            <th>24H</th>
+          </tr>
+        </thead>
+        <tbody id="marketRows"></tbody>
+      </table>
+    </div>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-label" data-es="ARQUITECTURA" data-en="ARCHITECTURE">ARQUITECTURA</div>
+    <h2 class="section-title" data-es="¿Cómo funciona?" data-en="How does it work?">¿Cómo funciona?</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title" data-es="Splash Screen" data-en="Splash Screen">Splash Screen</div>
+        <div class="step-desc" data-es="Pantalla de bienvenida animada que carga la app." data-en="Animated welcome screen that loads the app.">Pantalla de bienvenida animada que carga la app.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title" data-es="Petición API" data-en="API Request">Petición API</div>
+        <div class="step-desc" data-es="Retrofit llama a CoinMarketCap vía Coroutine en hilo IO." data-en="Retrofit calls CoinMarketCap via Coroutine on IO thread.">Retrofit llama a CoinMarketCap vía Coroutine en hilo IO.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title" data-es="Lista & Búsqueda" data-en="List & Search">Lista & Búsqueda</div>
+        <div class="step-desc" data-es="RecyclerView muestra los datos. SearchView filtra en memoria." data-en="RecyclerView displays the data. SearchView filters in memory.">RecyclerView muestra los datos. SearchView filtra en memoria.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title" data-es="Vista Detalle" data-en="Detail View">Vista Detalle</div>
+        <div class="step-desc" data-es="Intent pasa los datos a CryptoDetailActivity con color según variación." data-en="Intent passes data to CryptoDetailActivity with color-coded change.">Intent pasa los datos a CryptoDetailActivity con color según variación.</div>
+      </div>
+    </div>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- TECH STACK -->
+  <section id="tech">
+    <div class="section-label" data-es="TECNOLOGÍAS" data-en="TECH STACK">TECNOLOGÍAS</div>
+    <h2 class="section-title" data-es="Stack utilizado" data-en="Stack used">Stack utilizado</h2>
+    <div class="tech-row">
+      <span class="tech-tag">Kotlin</span>
+      <span class="tech-tag">Android SDK</span>
+      <span class="tech-tag">Retrofit 2</span>
+      <span class="tech-tag">Gson</span>
+      <span class="tech-tag">Coroutines</span>
+      <span class="tech-tag">RecyclerView</span>
+      <span class="tech-tag">View Binding</span>
+      <span class="tech-tag">CoinMarketCap API</span>
+      <span class="tech-tag">Gradle (Kotlin DSL)</span>
+    </div>
+  </section>
+ 
+</main>
+ 
+<footer>
+  <p>
+    <span data-es="Desarrollado con" data-en="Built with">Desarrollado con</span> ♥ ·
+    <a href="https://github.com/anrano/InfoCrypto-App" target="_blank">github.com/anrano/InfoCrypto-App</a>
+  </p>
+</footer>
+ 
+<script>
+  // ─── DATA ───
+  const cryptos = [
+    { sym:'BTC', name:'Bitcoin',  base:93800, chg:+2.41 },
+    { sym:'ETH', name:'Ethereum', base:3240,  chg:-1.12 },
+    { sym:'BNB', name:'BNB',      base:598,   chg:+0.78 },
+    { sym:'SOL', name:'Solana',   base:172,   chg:+3.55 },
+    { sym:'XRP', name:'Ripple',   base:0.524, chg:-0.33 },
+    { sym:'ADA', name:'Cardano',  base:0.447, chg:+1.20 },
+  ];
+ 
+  let prices = cryptos.map(c => ({ ...c, price: c.base }));
+ 
+  // ─── TICKER ───
+  function buildTicker() {
+    const wrap = document.getElementById('ticker');
+    const items = [...prices, ...prices].map(c => {
+      const sign = c.chg >= 0 ? '+' : '';
+      const cls = c.chg >= 0 ? 'up' : 'dn';
+      return `<span class="ticker-item"><span class="sym">${c.sym}</span> <span>$${c.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span> <span class="${cls}">${sign}${c.chg}%</span></span>`;
+    }).join('');
+    wrap.innerHTML = items;
+  }
+ 
+  // ─── PHONE ROWS ───
+  const phoneCoins = ['BTC','ETH','BNB','SOL','XRP'];
+  function buildPhone() {
+    const el = document.getElementById('phoneRows');
+    el.innerHTML = phoneCoins.map(s => {
+      const c = prices.find(x => x.sym === s);
+      const cls = c.chg >= 0 ? 'up' : 'dn';
+      const arr = c.chg >= 0 ? '▲' : '▼';
+      return `<div class="phone-row">
+        <div><div class="row-coin">${c.name}</div><div class="row-sym">${c.sym}</div></div>
+        <div style="text-align:right">
+          <div class="row-price">$${c.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+          <div class="row-chg ${cls}">${arr} ${Math.abs(c.chg)}%</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+ 
+  // ─── MARKET TABLE ───
+  function buildTable() {
+    const el = document.getElementById('marketRows');
+    el.innerHTML = prices.map(c => {
+      const sign = c.chg >= 0 ? '+' : '';
+      const cls = c.chg >= 0 ? 'up' : 'dn';
+      const arr = c.chg >= 0 ? '▲' : '▼';
+      return `<tr>
+        <td>${c.name}</td>
+        <td class="sym-cell">${c.sym}</td>
+        <td>$${c.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+        <td class="${cls}">${arr} ${sign}${c.chg.toFixed(2)}%</td>
+      </tr>`;
+    }).join('');
+  }
+ 
+  // ─── LIVE PRICE ANIMATION ───
+  function jitterPrices() {
+    prices = prices.map(c => {
+      const delta = (Math.random() - 0.48) * c.base * 0.0008;
+      const newPrice = Math.max(0.001, c.price + delta);
+      const newChg = +(c.chg + (Math.random() - 0.5) * 0.06).toFixed(2);
+      return { ...c, price: newPrice, chg: newChg };
+    });
+    buildTicker();
+    buildPhone();
+    buildTable();
+  }
+ 
+  // ─── LANG ───
+  let lang = 'es';
+  function toggleLang() {
+    lang = lang === 'es' ? 'en' : 'es';
+    document.documentElement.setAttribute('data-lang', lang);
+    document.getElementById('langBtn').textContent = lang === 'es' ? 'EN' : 'ES';
+    document.querySelectorAll('[data-es]').forEach(el => {
+      el.textContent = el.getAttribute(`data-${lang}`);
+    });
+  }
+ 
+  // ─── THEME ───
+  let theme = 'dark';
+  function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀' : '☾';
+  }
+ 
+  // ─── INIT ───
+  buildTicker();
+  buildPhone();
+  buildTable();
+  setInterval(jitterPrices, 1800);
+</script>
+</body>
+</html>
